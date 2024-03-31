@@ -44,3 +44,54 @@ def function_1(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse("Movie information saved successfully", status_code=200)
     except Exception as e:
         return func.HttpResponse(f"An error occurred: {str(e)}", status_code=500)
+    
+
+def second_trigger(req: func.HttpRequest) -> func.HttpResponse:
+    ratings = []
+    try:
+        req_body = req.get_json()
+        rating_info = {
+            'Title': req_body.get('title'),
+            'Opinion': req_body.get('opinion'),
+            'Rating': req_body.get('rating'),
+            'Date_Time': req_body.get('date_time'),
+            'Author': req_body.get('author')
+        }
+        ratings.append(rating_info)
+
+        return func.HttpResponse("Rating information saved successfully", status_code=200)
+    except Exception as e:
+        return func.HttpResponse(f"An error occurred: {str(e)}", status_code=500)
+
+
+def third_trigger(req: func.HttpRequest) -> func.HttpResponse:
+    try:
+        if mytimer.past_due:
+            print('The timer is past due!')
+        
+
+        average_ratings = {}
+        count_ratings = {}
+    
+        for rating in ratings:
+            title = rating['Title']
+            rating_value = int(rating['Rating'])
+        
+        if title not in average_ratings:
+            average_ratings[title] = rating_value
+            count_ratings[title] = 1
+        else:
+            average_ratings[title] += rating_value
+            count_ratings[title] += 1
+    
+        for title in average_ratings:
+            average_ratings[title] /= count_ratings[title]
+        
+        print("Average Ratings:")
+        for title, average_ratings in average_ratings.items():
+            print(f"{title}: {average_ratings}")
+        
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+
